@@ -319,6 +319,9 @@
                         <version>1.1.1</version>
                     </dependency>
                 </dependencies>
+                <configuration>
+                    <argLine>${argLine} -XX:+EnableDynamicAgentLoading</argLine>
+                </configuration>
             </plugin>
         </plugins>
     </build>
