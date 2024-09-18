@@ -50,7 +50,8 @@ The following properties are available
 ## Profiles
 
 **Default**: The default dependencies (no JavaFX and doesn't generate code coverage)
-**Jacoco**: Same as default, but generates the code coverage report
+**Jacoco**: Same as default, but generates the code coverage report.
+    - `mvn verify` will fail when the `jacoco.threshold.line` and `jacoco.threshold.line` thresholds aren't met (default: 0, can be overridden via a property)
 **JavaFX**: Includes the JavaFX dependencies
 **Release**: Use to
 release new version of the `informaticspom`
