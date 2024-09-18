@@ -432,6 +432,9 @@
             <properties>
                 <argLine> ${jacocoArgLine} <!---javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar=destfile=${project.build.directory}/jacoco.exec-->
                 </argLine>
+                <!-- Override these in your project for a quality gate on mvn verify -->
+                <jacoco.threshold.line>0.00</jacoco.threshold.line>
+                <jacoco.threshold.branch>0.00</jacoco.threshold.branch>
             </properties>
             <dependencies>
                 <dependency>
@@ -449,43 +452,36 @@
                         <artifactId>jacoco-maven-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>default-prepare-agent</id>
                                 <goals>
                                     <goal>prepare-agent</goal>
                                 </goals>
                             </execution>
                             <execution>
-                                <id>default-prepare-agent-integration</id>
-                                <goals>
-                                    <goal>prepare-agent-integration</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>default-report</id>
+                                <id>jacoco-report</id>
+                                <phase>test</phase>
                                 <goals>
                                     <goal>report</goal>
                                 </goals>
                             </execution>
                             <execution>
-                                <id>default-report-integration</id>
+                                <id>jacoco-check</id>
                                 <goals>
-                                    <goal>report-integration</goal>
+                                    <goal>check</goal>
                                 </goals>
-                            </execution>
-                            <execution>
-                                <id>default-check</id>
                                 <configuration>
                                     <rules>
-                                        <!--  implementation is needed only for Maven 2  -->
-                                        <rule implementation="org.jacoco.maven.RuleConfiguration">
-                                            <element>BUNDLE</element>
+                                        <rule>
+                                            <element>PACKAGE</element>
                                             <limits>
-                                                <!--  implementation is needed only for Maven 2  -->
-                                                <limit
-                                                    implementation="org.jacoco.report.check.Limit">
-                                                    <counter>COMPLEXITY</counter>
+                                                <limit>
+                                                    <counter>LINE</counter>
                                                     <value>COVEREDRATIO</value>
-                                                    <minimum>0.60</minimum>
+                                                    <minimum>${jacoco.threshold.line}</minimum>
+                                                </limit>
+                                                <limit>
+                                                    <counter>BRANCH</counter>
+                                                    <value>COVEREDRATIO</value>
+                                                    <minimum>${jacoco.threshold.branch}</minimum>
                                                 </limit>
                                             </limits>
                                         </rule>
