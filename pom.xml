@@ -6,7 +6,7 @@
     <description>Fontys Venlo Informatics POM</description>
     <groupId>io.github.fontysvenlo</groupId>
     <artifactId>informaticspom</artifactId>
-    <version>1.3</version>
+    <version>1.4</version>
     <packaging>pom</packaging>
     <name>FontysVenlo :: InformaticsPom</name>
     <url>https://fontysvenlo.github.io/informaticspom/</url>
