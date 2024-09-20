@@ -24,7 +24,7 @@ The pom can be used by defining it as the parent pom
 <parent>
     <groupId>io.github.fontysvenlo</groupId>
     <artifactId>informaticspom</artifactId>
-    <version>0.8</version>
+    <version>1.4</version>
 </parent>
 ```
 
