@@ -35,15 +35,15 @@ The following properties are available
 | Property | Default value | Description |
 | --- | --- | --- |
 | project.build.sourceEncoding | UTF-8 | Encoding used for source code |
-| java.release | 17 | The java version used |
-| mockito.core.version | 4.3.1 | The mockito version |
-| junit.jupiter.version | 5.8.2 | The JUnit 5 (Jupiter) version |
-| assertj.core.version | 3.22.0 | The assertj version |
-| jacoco.version | 0.8.7 | The Java Code Coverage version |
+| java.release | 21 | The java version used |
+| mockito.core.version | 5.9.0 | The mockito version |
+| junit.jupiter.version | 5.10.1 | The JUnit 5 (Jupiter) version |
+| assertj.core.version | 3.25.1 | The assertj version |
+| jacoco.version | 0.8.11 | The Java Code Coverage version |
 | jacocoArgLine | | Optional arguments that get passed to JaCoCo |
 | argLine | | Optional arguments that get passed to maven surefire |
 | surefire.opens | | Optional arguments that get passed to maven surefire plugin to open modules |
-| maven.surefire.version | 3.0.0-M6 | Maven surefire version |
+| maven.surefire.version | 3.2.5 | Maven surefire version |
 | maven.compiler.release | ${java.release} | The compiler release version used by maven |
 | exec.main | | The main class that should be set in the JAR by maven compiler |
 
