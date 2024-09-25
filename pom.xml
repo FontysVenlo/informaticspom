@@ -250,9 +250,7 @@
                     </argLine>
                     <trimStackTrace>true</trimStackTrace>
                     <reportFormat>plain</reportFormat>
-                    <consoleOutputReporter>
-                        <disable>true</disable>
-                    </consoleOutputReporter>
+                    <!-- This reports the individual test names to the stdout: -->
                     <statelessTestsetInfoReporter
                         implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5StatelessTestsetInfoTreeReporter"/>
                 </configuration>
