@@ -6,7 +6,7 @@
     <description>Fontys Venlo Informatics POM</description>
     <groupId>io.github.fontysvenlo</groupId>
     <artifactId>informaticspom</artifactId>
-    <version>1.6</version>
+    <version>1.7</version>
     <packaging>pom</packaging>
     <name>FontysVenlo :: InformaticsPom</name>
     <url>https://fontysvenlo.github.io/informaticspom/</url>
@@ -254,6 +254,15 @@
                     <!-- This reports the individual test names to the stdout: -->
                     <statelessTestsetInfoReporter
                         implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5StatelessTestsetInfoTreeReporter" />
+                    <statelessTestsetReporter
+                        implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
+                        <disable>false</disable>
+                        <version>3.0</version>
+                        <usePhrasedFileName>false</usePhrasedFileName>
+                        <usePhrasedTestSuiteClassName>true</usePhrasedTestSuiteClassName>
+                        <usePhrasedTestCaseClassName>true</usePhrasedTestCaseClassName>
+                        <usePhrasedTestCaseMethodName>true</usePhrasedTestCaseMethodName>
+                    </statelessTestsetReporter>
                 </configuration>
             </plugin>
             <plugin>
