@@ -64,6 +64,8 @@
         <maven.surefire.version>3.5.4</maven.surefire.version>
         <maven.compiler.release>${java.release}</maven.compiler.release>
         <archunit.version>1.4.1</archunit.version>
+        <!-- keep in line with the slf4j-api version archunit depends on -->
+        <slf4j.version>2.0.17</slf4j.version>
         <!-- Main class for the jar -->
         <exec.main></exec.main>
     </properties>
@@ -252,6 +254,8 @@
                 <configuration>
                     <argLine>
                         @{argLine}
+                        <!-- byte-buddy (used by assertj soft assertions and mockito) still uses sun.misc.Unsafe -->
+                        --sun-misc-unsafe-memory-access=allow
                         ${surefire.junit.exports}
                         ${surefire.opens}
                     </argLine>
@@ -345,6 +349,11 @@
                 <artifactId>archunit-junit5</artifactId>
                 <version>${archunit.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-nop</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <reporting>
@@ -419,6 +428,12 @@
         <dependency>
             <groupId>com.tngtech.archunit</groupId>
             <artifactId>archunit-junit5</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- archunit logs via slf4j, silence the "No SLF4J providers were found" warning -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

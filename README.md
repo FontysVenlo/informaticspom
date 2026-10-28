@@ -44,6 +44,7 @@ The following properties are available
 | argLine | | Optional arguments that get passed to maven surefire |
 | surefire.opens | | Optional arguments that get passed to maven surefire plugin to open modules |
 | surefire.opens.to | ALL-UNNAMED | The modules to open the packages in `surefire.opens` to, see [Modular projects](#modular-projects) |
+| slf4j.version | 2.0.17 | The version of `slf4j-nop`, keeps ArchUnit from warning about a missing SLF4J provider |
 | maven.surefire.version | 3.2.5 | Maven surefire version |
 | maven.compiler.release | ${java.release} | The compiler release version used by maven |
 | exec.main | | The main class that should be set in the JAR by maven compiler |
