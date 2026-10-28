@@ -6,7 +6,7 @@
     <description>Fontys Venlo Informatics POM</description>
     <groupId>io.github.fontysvenlo</groupId>
     <artifactId>informaticspom</artifactId>
-    <version>1.8</version>
+    <version>1.9</version>
     <packaging>pom</packaging>
     <name>FontysVenlo :: InformaticsPom</name>
     <url>https://fontysvenlo.github.io/informaticspom/</url>
@@ -52,15 +52,27 @@
         <!-- empty argline is used by surefire and set by jacoco profile -->
         <jacocoArgLine></jacocoArgLine>
         <argLine></argLine>
-        <!-- for java 9 modules (jigsaw) use surefire.opens to open packages -->
+        <!-- for java 9 modules (jigsaw) use surefire.opens to open packages,
+        //  open them to ${surefire.opens.to}, e.g. add-opens mymodule/mypackage=${surefire.opens.to} -->
         <surefire.opens></surefire.opens>
+        <!-- modules the packages in surefire.opens are opened to, extended by the intellij-modules profile -->
+        <surefire.opens.to>ALL-UNNAMED</surefire.opens.to>
+        <!-- set by the intellij-modules profile -->
+        <surefire.junit.exports></surefire.junit.exports>
+        <!-- set by the unsafe-memory-access profile -->
+        <surefire.unsafe.access></surefire.unsafe.access>
         <!-- surefire 3.0.0-Mx uses incompatible message handling for
         //  assertions.fail, uses CDATA instead of plain xml text, so for the time being stay at 2.22.2 -->
         <maven.surefire.version>3.5.4</maven.surefire.version>
         <maven.compiler.release>${java.release}</maven.compiler.release>
         <archunit.version>1.4.1</archunit.version>
-        <!-- Main class for the jar -->
+        <!-- keep in line with the slf4j-api version archunit depends on -->
+        <slf4j.version>2.0.17</slf4j.version>
+        <!-- Main class for the jar and for mvn exec:java -->
         <exec.main></exec.main>
+        <!-- exec-maven-plugin reads exec.mainClass; a property (not plugin configuration),
+        //  so mvn exec:java -Dexec.mainClass=... still overrides it -->
+        <exec.mainClass>${exec.main}</exec.mainClass>
     </properties>
 
 
@@ -247,6 +259,8 @@
                 <configuration>
                     <argLine>
                         @{argLine}
+                        ${surefire.unsafe.access}
+                        ${surefire.junit.exports}
                         ${surefire.opens}
                     </argLine>
                     <trimStackTrace>true</trimStackTrace>
@@ -339,6 +353,11 @@
                 <artifactId>archunit-junit5</artifactId>
                 <version>${archunit.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-nop</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <reporting>
@@ -413,6 +432,12 @@
         <dependency>
             <groupId>com.tngtech.archunit</groupId>
             <artifactId>archunit-junit5</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- archunit logs via slf4j, silence the "No SLF4J providers were found" warning -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -521,6 +546,40 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <!-- IntelliJ (2026.2) runs the tests of a module with the JUnit platform on the
+            //  module path but the Jupiter engine on the classpath. Give the engine access to
+            //  the platform internals and let the platform reflect into the test packages.
+            //  The property is only set when IntelliJ imports the project. -->
+            <id>intellij-modules</id>
+            <activation>
+                <property>
+                    <name>idea.maven.embedder.version</name>
+                </property>
+                <file>
+                    <exists>${basedir}/src/main/java/module-info.java</exists>
+                </file>
+            </activation>
+            <properties>
+                <surefire.opens.to>ALL-UNNAMED,org.junit.platform.commons</surefire.opens.to>
+                <surefire.junit.exports>
+                    --add-exports org.junit.platform.commons/org.junit.platform.commons.logging=ALL-UNNAMED
+                    --add-exports org.junit.platform.commons/org.junit.platform.commons.util=ALL-UNNAMED
+                </surefire.junit.exports>
+            </properties>
+        </profile>
+        <profile>
+            <!-- byte-buddy (used by assertj soft assertions and mockito) still uses sun.misc.Unsafe,
+            //  which JDK 24+ warns about. The option does not exist before JDK 23 and the JVM
+            //  refuses unknown options, so only pass it on a JDK that warns. -->
+            <id>unsafe-memory-access</id>
+            <activation>
+                <jdk>[24,)</jdk>
+            </activation>
+            <properties>
+                <surefire.unsafe.access>--sun-misc-unsafe-memory-access=allow</surefire.unsafe.access>
+            </properties>
         </profile>
         <profile>
             <!-- provide Displaynames in netbeans test output window -->
