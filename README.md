@@ -58,6 +58,7 @@ The following properties are available
 **Release**: Use to
 release new version of the `informaticspom`
 **intellij-modules**: Activated automatically when IntelliJ imports a project that has a `src/main/java/module-info.java`, see [Modular projects](#modular-projects)
+**unsafe-memory-access**: Activated automatically on JDK 24+, allows `sun.misc.Unsafe` in tests to silence the warnings caused by byte-buddy (AssertJ soft assertions, Mockito)
 
 ## Modular projects
 

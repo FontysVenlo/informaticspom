@@ -59,6 +59,8 @@
         <surefire.opens.to>ALL-UNNAMED</surefire.opens.to>
         <!-- set by the intellij-modules profile -->
         <surefire.junit.exports></surefire.junit.exports>
+        <!-- set by the unsafe-memory-access profile -->
+        <surefire.unsafe.access></surefire.unsafe.access>
         <!-- surefire 3.0.0-Mx uses incompatible message handling for
         //  assertions.fail, uses CDATA instead of plain xml text, so for the time being stay at 2.22.2 -->
         <maven.surefire.version>3.5.4</maven.surefire.version>
@@ -258,8 +260,7 @@
                 <configuration>
                     <argLine>
                         @{argLine}
-                        <!-- byte-buddy (used by assertj soft assertions and mockito) still uses sun.misc.Unsafe -->
-                        --sun-misc-unsafe-memory-access=allow
+                        ${surefire.unsafe.access}
                         ${surefire.junit.exports}
                         ${surefire.opens}
                     </argLine>
@@ -567,6 +568,18 @@
                     --add-exports org.junit.platform.commons/org.junit.platform.commons.logging=ALL-UNNAMED
                     --add-exports org.junit.platform.commons/org.junit.platform.commons.util=ALL-UNNAMED
                 </surefire.junit.exports>
+            </properties>
+        </profile>
+        <profile>
+            <!-- byte-buddy (used by assertj soft assertions and mockito) still uses sun.misc.Unsafe,
+            //  which JDK 24+ warns about. The option does not exist before JDK 23 and the JVM
+            //  refuses unknown options, so only pass it on a JDK that warns. -->
+            <id>unsafe-memory-access</id>
+            <activation>
+                <jdk>[24,)</jdk>
+            </activation>
+            <properties>
+                <surefire.unsafe.access>--sun-misc-unsafe-memory-access=allow</surefire.unsafe.access>
             </properties>
         </profile>
         <profile>
