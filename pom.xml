@@ -516,7 +516,8 @@
                     <plugin>
                         <groupId>org.sonatype.central</groupId>
                         <artifactId>central-publishing-maven-plugin</artifactId>
-                        <version>0.10.0</version>
+                        <!-- 0.12.0+ keeps the staging metadata of Maven 3.10 out of the bundle -->
+                        <version>0.12.0</version>
                         <extensions>true</extensions>
                         <configuration>
                             <publishingServerId>central</publishingServerId>
