@@ -47,7 +47,7 @@ The following properties are available
 | slf4j.version | 2.0.17 | The version of `slf4j-nop`, keeps ArchUnit from warning about a missing SLF4J provider |
 | maven.surefire.version | 3.2.5 | Maven surefire version |
 | maven.compiler.release | ${java.release} | The compiler release version used by maven |
-| exec.main | | The main class that should be set in the JAR by maven compiler |
+| exec.main | | The main class that should be set in the JAR by maven compiler, also used by `mvn exec:java` (override with `-Dexec.main=...`) |
 
 ## Profiles
 
