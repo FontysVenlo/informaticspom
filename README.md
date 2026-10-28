@@ -43,6 +43,7 @@ The following properties are available
 | jacocoArgLine | | Optional arguments that get passed to JaCoCo |
 | argLine | | Optional arguments that get passed to maven surefire |
 | surefire.opens | | Optional arguments that get passed to maven surefire plugin to open modules |
+| surefire.opens.to | ALL-UNNAMED | The modules to open the packages in `surefire.opens` to, see [Modular projects](#modular-projects) |
 | maven.surefire.version | 3.2.5 | Maven surefire version |
 | maven.compiler.release | ${java.release} | The compiler release version used by maven |
 | exec.main | | The main class that should be set in the JAR by maven compiler |
@@ -55,6 +56,19 @@ The following properties are available
 **JavaFX**: Includes the JavaFX dependencies
 **Release**: Use to
 release new version of the `informaticspom`
+**intellij-modules**: Activated automatically when IntelliJ imports a project that has a `src/main/java/module-info.java`, see [Modular projects](#modular-projects)
+
+## Modular projects
+
+Open the packages that the tests need reflective access to with `surefire.opens`, and open them to `${surefire.opens.to}`:
+
+```
+<surefire.opens>
+    --add-opens mymodule/mypackage=${surefire.opens.to}
+</surefire.opens>
+```
+
+IntelliJ (2026.2) runs the tests of a modular project with the JUnit platform on the module path, but the Jupiter engine on the classpath, which fails with `TestEngine with ID 'junit-jupiter' failed to discover tests`. The `intellij-modules` profile works around this: it gives the engine access to the JUnit platform internals and adds `org.junit.platform.commons` to `surefire.opens.to`. Outside IntelliJ `surefire.opens.to` is just `ALL-UNNAMED`, so Maven runs without extra warnings.
 
 ## Publishing
 

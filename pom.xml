@@ -6,7 +6,7 @@
     <description>Fontys Venlo Informatics POM</description>
     <groupId>io.github.fontysvenlo</groupId>
     <artifactId>informaticspom</artifactId>
-    <version>1.8</version>
+    <version>1.9</version>
     <packaging>pom</packaging>
     <name>FontysVenlo :: InformaticsPom</name>
     <url>https://fontysvenlo.github.io/informaticspom/</url>
@@ -52,8 +52,13 @@
         <!-- empty argline is used by surefire and set by jacoco profile -->
         <jacocoArgLine></jacocoArgLine>
         <argLine></argLine>
-        <!-- for java 9 modules (jigsaw) use surefire.opens to open packages -->
+        <!-- for java 9 modules (jigsaw) use surefire.opens to open packages,
+        //  open them to ${surefire.opens.to}, e.g. add-opens mymodule/mypackage=${surefire.opens.to} -->
         <surefire.opens></surefire.opens>
+        <!-- modules the packages in surefire.opens are opened to, extended by the intellij-modules profile -->
+        <surefire.opens.to>ALL-UNNAMED</surefire.opens.to>
+        <!-- set by the intellij-modules profile -->
+        <surefire.junit.exports></surefire.junit.exports>
         <!-- surefire 3.0.0-Mx uses incompatible message handling for
         //  assertions.fail, uses CDATA instead of plain xml text, so for the time being stay at 2.22.2 -->
         <maven.surefire.version>3.5.4</maven.surefire.version>
@@ -247,6 +252,7 @@
                 <configuration>
                     <argLine>
                         @{argLine}
+                        ${surefire.junit.exports}
                         ${surefire.opens}
                     </argLine>
                     <trimStackTrace>true</trimStackTrace>
@@ -521,6 +527,28 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <!-- IntelliJ (2026.2) runs the tests of a module with the JUnit platform on the
+            //  module path but the Jupiter engine on the classpath. Give the engine access to
+            //  the platform internals and let the platform reflect into the test packages.
+            //  The property is only set when IntelliJ imports the project. -->
+            <id>intellij-modules</id>
+            <activation>
+                <property>
+                    <name>idea.maven.embedder.version</name>
+                </property>
+                <file>
+                    <exists>${basedir}/src/main/java/module-info.java</exists>
+                </file>
+            </activation>
+            <properties>
+                <surefire.opens.to>ALL-UNNAMED,org.junit.platform.commons</surefire.opens.to>
+                <surefire.junit.exports>
+                    --add-exports org.junit.platform.commons/org.junit.platform.commons.logging=ALL-UNNAMED
+                    --add-exports org.junit.platform.commons/org.junit.platform.commons.util=ALL-UNNAMED
+                </surefire.junit.exports>
+            </properties>
         </profile>
         <profile>
             <!-- provide Displaynames in netbeans test output window -->
