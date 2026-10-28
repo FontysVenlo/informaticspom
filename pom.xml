@@ -70,6 +70,9 @@
         <slf4j.version>2.0.17</slf4j.version>
         <!-- Main class for the jar and for mvn exec:java -->
         <exec.main></exec.main>
+        <!-- exec-maven-plugin reads exec.mainClass; a property (not plugin configuration),
+        //  so mvn exec:java -Dexec.mainClass=... still overrides it -->
+        <exec.mainClass>${exec.main}</exec.mainClass>
     </properties>
 
 
@@ -116,10 +119,6 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
                     <version>3.6.3</version>
-                    <configuration>
-                        <!-- mvn exec:java, override with -Dexec.main=... -->
-                        <mainClass>${exec.main}</mainClass>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
